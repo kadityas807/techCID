@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TechPath Navigator</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Inter, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #03091a;
+    }
+    header {
+      text-align: center;
+      padding: 20px;
+    }
+    header h1 {
+      margin: 0;
+      color: #ffffff;
+    }
+    header p {
+      color: #837e7e;
+    }
+    .container {
+      display: flex;
+      justify-content: space-around;
+      margin: 20px;
+      gap: 20px;
+    }
+    .card {
+      background: rgb(115, 111, 111);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      width: 40%;
+    }
+    .card h2 {
+      margin-top: 0;
+      color: #060606
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    input[type="text"], select {
+      width: 100%;
+      padding: 8px;
+      border: 3px solid #f6f6f5;
+      border-radius: 5px;
+    }
+    .interests {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .interests label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      color: rgb(255, 255, 255);
+      font-size: 16px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    .blue { background: #1b1be3; }
+    .green { background: #790bcd; }
+    .chat-box {
+      background: #242121;
+      border: 1px solid #ddd;
+      padding: 10px;
+      border-radius: 10px;
+      height: 300px;
+      overflow-y: auto; /*adding scroll  */
+    }
+    .chat-message {
+      background: #e5e7eb;
+      padding: 8px;
+      margin: 5px 0;
+      border-radius: 5px;
+    }
+    .chat-input {
+      display: flex;
+      margin-top: 10px;
+    }
+    .chat-input input {
+      display: flex; 
+  margin-top: 10px;
+    }
+    .chat-input button {
+      border-radius: 0 5px 5px 0;
+      background: #3a0ce2;
+      color: white;
+    }
+    .progress {
+      margin: 20px;
+      background: rgb(104, 100, 100);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .progress-bar-container {
+      width: 100%;
+      background: #cbcbd4;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+    .progress-bar {
+      width: 60%; /* Example progress */
+      background: #1feb22;
+      padding: 8px;
+      color: rgb(241, 234, 234);
+      text-align: center;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>TechPath Navigator</h1>
+    <p>Your Personal Guide to a Future in Technology</p>
+  </header>
+
+  <div class="container">
+    <!-- Profile Section -->
+    <div class="card">
+      <h2 class="profile-heading">Your Profile</h2>
+      <div class="form-group">
+        <label>Current Course/Major</label>
+        <input type="text" id="course-input" placeholder="e.g., Computer Science">
+      </div>
+      <div class="form-group">
+        <label>Desired Tech Field</label>
+        <select id="field-select">
+          <option>Web Development</option>
+          <option>AI \ ML</option>
+          <option>Data Science</option>
+          <option>Cyber Security</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Your Interests</label>
+        <div class="interests">
+          <label><input type="checkbox" class="interest-checkbox" value="Frontend"> Frontend</label>
+          <label><input type="checkbox" class="interest-checkbox" value="Frontend"> Backend</label>
+          <label><input type="checkbox" class="interest-checkbox" value="Frontend"> DevOps</label>
+          <label><input type="checkbox" class="interest-checkbox" value="Frontend"> UI/UX</label>
+          <label><input type="checkbox" class="interest-checkbox" value="Frontend"> python</label>
+          <label><input type="checkbox" class="interest-checkbox" value="Frontend"> Algorithms</label>
+          <label><input type="checkbox" class="interest-checkbox" value="Frontend"> Networking</label>
+         <label><input type="checkbox" class="interest-checkbox" value="Frontend"> Machine Learning</label>
+         <label><input type="checkbox" class="interest-checkbox" value="Frontend"> Deep Learning</label>
+         <label><input type="checkbox" class="interest-checkbox" value="Frontend"> CSS</label>
+        </div>
+      </div>
+      <button class="blue" id="roadmap-btn">Generate My Roadmap</button>
+      <button class="green" id="projects-btn">✨ Suggest Projects</button>
+    </div>
+
+    <!-- Chat Section -->
+    <div class="card">
+      <h2 class="chat-heading">💡 Chat with Your AI Mentor</h2>
+      <div class="chat-box" id="chat-box">
+        <div class="chat-message">Hello! I'm your AI mentor. Please fill out your profile on the left to get a personalized roadmap!</div>
+        <div class="chat-message">Ask me anything!</div>
+      </div>
+      <div class="chat-input">
+        <input type="text" placeholder="Ask a question..." id="chat-input"><br>
+        <button id="send-button">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress Section -->
+  <div class="progress">
+    <h2>Your Roadmap Progress</h2>
+    <div style="display: flex; align-items: center; gap: 20px;">
+      <div style="width: 200px; height: 200px;">
+        <canvas id="progressChart"></canvas>
+      </div>
+      <div id="roadmap-checklist">
+        <p>Your progress chart will appear here once you generate a roadmap.</p>
+      </div>
+     </div>
+    </div>
+   <script type="module">
+    // Connect to all HTML elements
+    const chatBox = document.getElementById("chat-box");
+    const chatInput = document.getElementById("chat-input");
+    const sendButton = document.getElementById("send-button");
+    const roadmapButton = document.getElementById("roadmap-btn");
+    const projectsButton = document.getElementById("projects-btn");
+    const checklistContainer = document.getElementById("roadmap-checklist");
+    const chartCanvas = document.getElementById('progressChart');
+    let progressChart; // This will hold our chart object
+
+    // --- CHART AND PROGRESS FUNCTIONS ---
+
+    // This function calculates progress and updates the chart
+    function updateChart() {
+        if (!progressChart) return; // Do nothing if the chart doesn't exist yet
+
+        const checkboxes = checklistContainer.querySelectorAll('input[type="checkbox"]');
+        const totalTasks = checkboxes.length;
+        if (totalTasks === 0) return;
+
+        const completedTasks = Array.from(checkboxes).filter(cb => cb.checked).length;
+        
+        // Update chart data
+        progressChart.data.datasets[0].data = [completedTasks, totalTasks - completedTasks];
+        progressChart.update();
+    }
+
+    // This function creates the checklist and the initial chart from the AI's text
+    function displayRoadmap(text) {
+        checklistContainer.innerHTML = ''; // Clear previous checklist
+        const lines = text.split('\n'); // Split the AI response into lines
+        
+        // Find only the task lines (assumes you modified the prompt to add [TASK])
+        const tasks = lines.filter(line => line.trim().startsWith('*') || line.trim().startsWith('[TASK]'));
+
+        if (tasks.length === 0) {
+            checklistContainer.innerHTML = '<p>Could not find any tasks in the roadmap response.</p>';
+            return;
+        }
+
+        tasks.forEach(task => {
+            // Clean up the task text for display
+            const taskText = task.replace('[TASK]', '').replace('*', '').trim();
+            const checkboxDiv = document.createElement('div');
+            checkboxDiv.innerHTML = <label style="color: white;"><input type="checkbox"> ${taskText}</label>;
+            checklistContainer.appendChild(checkboxDiv);
+        });
+
+        // Add an event listener to the whole container
+        checklistContainer.addEventListener('change', updateChart);
+
+        // If a chart already exists, destroy it before creating a new one
+        if (progressChart) {
+            progressChart.destroy();
+        }
+
+        // Create the new chart
+        progressChart = new Chart(chartCanvas, {
+            type: 'doughnut',
+            data: {
+                labels: ['Completed', 'Remaining'],
+                datasets: [{
+                    data: [0, tasks.length],
+                    backgroundColor: ['#22c55e', '#5a5a5a'], // Changed to green
+                    borderColor: ['#898989'],
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { enabled: false }
+                }
+            }
+        });
+
+        updateChart(); // Call once to set the initial state
+    }
+
+    // --- CORE API CALL FUNCTIONS ---
+
+    // This function generates the ROADMAP and displays it in the PROGRESS section
+    async function generateRoadmap() {
+        const course = document.getElementById("course-input").value;
+        const field = document.getElementById("field-select").value;
+        const interestCheckboxes = document.querySelectorAll(".interest-checkbox:checked");
+        let interests = [];
+        interestCheckboxes.forEach((checkbox) => {
+            interests.push(checkbox.value);
+        });
+
+        if (!course && !field && interests.length === 0) {
+            alert("Please fill out your profile before generating a roadmap.");
+            return;
+        }
+
+        // Modified prompt to ask for tasks
+        const prompt = `
+            I am a student with the following profile:
+            - My current course/major is: ${course}
+            - I want to get into the field of: ${field}
+            - My specific interests are: ${interests.join(", ")}
+            Based on this profile, generate a breif , step-by-step learning roadmap,give more gape after each step. 
+            Prefix each individual task or step with an asterisk (     ). Do not use any other markdown.
+        `;
+        
+        try {
+            checklistContainer.innerHTML = '<p style="color: white;">Making your roadmap...</p>';
+            
+            const response = await fetch('/api/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prompt: prompt }),
+            });
+
+            if (!response.ok) {
+                throw new Error(Server error: ${response.statusText});
+            }
+
+            const data = await response.json();
+            const originalText = data.text;
+            
+            // Call the function to display the roadmap and chart
+            displayRoadmap(originalText);
+
+        } catch (error) {
+            checklistContainer.innerHTML = <p style="color: red;">Error: ${error.message}</p>;
+            console.error("generateRoadmap Error:", error);
+        }
+    }
+
+    // This function sends a CHAT message and displays it in the CHAT BOX
+    async function sendMessage() {
+        const userMessage = chatInput.value;
+        if (!userMessage) return;
+
+        sendButton.disabled = true;
+        sendButton.textContent = "Thinking...";
+
+        const userMessageDiv = document.createElement("div");
+        userMessageDiv.className = "chat-message";
+        userMessageDiv.textContent = You: ${userMessage};
+        chatBox.appendChild(userMessageDiv);
+
+        chatInput.value = "";
+        
+        try {
+            const response = await fetch('/api/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prompt: userMessage }),
+            });
+
+            if (!response.ok) {
+                throw new Error(Server error: ${response.statusText});
+            }
+            
+            const data = await response.json();
+            const originalText = data.text;
+            const formattedText = originalText.replaceAll('* ', '<br>'); 
+
+            const aiMessageDiv = document.createElement("div");
+            aiMessageDiv.className = "chat-message";
+            aiMessageDiv.innerHTML = Mentor: ${formattedText};
+            chatBox.appendChild(aiMessageDiv);
+
+        } catch (error) {
+            const errorMessageDiv = document.createElement("div");
+            errorMessageDiv.className = "chat-message";
+            errorMessageDiv.textContent = Error: ${error.message};
+            chatBox.appendChild(errorMessageDiv);
+            console.error("sendMessage Error:", error);
+        } finally {
+            sendButton.disabled = false;
+            sendButton.textContent = "Send";
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    }
+
+    // --- EVENT LISTENERS ---
+    roadmapButton.addEventListener("click", generateRoadmap);
+    projectsButton.addEventListener("click", () => {
+        alert("Suggest Projects button is now working!");
+    });
+    sendButton.addEventListener("click", sendMessage);
+    chatInput.addEventListener("keypress", (event) => {
+        if (event.key === "Enter") {
+            sendMessage();
+        }
+    });
+  </script>
+</body>
+</html>
